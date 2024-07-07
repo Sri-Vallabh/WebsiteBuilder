@@ -1,0 +1,33 @@
+.resizable-widget {
+    /* Define the initial size and styling for the widget */
+}
+
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    /* Adjust size as needed */
+    height: 10px;
+    /* Adjust size as needed */
+    background-color: #000;
+    cursor: nwse-resize;
+    /* Cursor style for resizing */
+    bottom: -5px;
+    /* Adjust position relative to bottom */
+    right: -5px;
+    /* Adjust position relative to right */
+}
+
+.drag-handle {
+    position: absolute;
+    width: 10px;
+    /* Adjust size as needed */
+    height: 10px;
+    /* Adjust size as needed */
+    background-color: #000;
+    cursor: pointer;
+    /* Cursor style for dragging */
+    top: -5px;
+    /* Adjust position relative to top */
+    right: -5px;
+    /* Adjust position relative to right */
+}
