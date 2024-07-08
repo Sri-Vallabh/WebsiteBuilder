@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../constants";
 import DroppableItem from "./DroppableItem";
-import { FaTrash } from "../assets";
+import FaTrash from "../assets/FaTrash.svg"; // Importing the trash icon as an SVG
 
 const DroppableArea = () => {
   const [droppedItems, setDroppedItems] = useState([]);
@@ -10,7 +10,7 @@ const DroppableArea = () => {
   const [areaHeight, setAreaHeight] = useState(600);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0 });
-  const [deletedItemId, setDeletedItemId] = useState(null);
+  const [showTrashIcon, setShowTrashIcon] = useState(false);
 
   const dropAreaRef = useRef(null);
 
@@ -28,9 +28,11 @@ const DroppableArea = () => {
         top: offset.y - dropAreaRect.top,
       };
 
-      console.log("New item position:", newItem);
-
-      const isOutside = !monitor.isOver({ shallow: true });
+      const isOutside =
+        offset.x < dropAreaRect.left ||
+        offset.x > dropAreaRect.right ||
+        offset.y < dropAreaRect.top ||
+        offset.y > dropAreaRect.bottom;
 
       if (isOutside) {
         deleteItem(item.id);
@@ -53,6 +55,19 @@ const DroppableArea = () => {
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
+    hover: (item, monitor) => {
+      const offset = monitor.getClientOffset();
+      if (!dropAreaRef.current) return;
+
+      const dropAreaRect = dropAreaRef.current.getBoundingClientRect();
+      const isOutside =
+        offset.x < dropAreaRect.left ||
+        offset.x > dropAreaRect.right ||
+        offset.y < dropAreaRect.top ||
+        offset.y > dropAreaRect.bottom;
+
+      setShowTrashIcon(isOutside);
+    },
   });
 
   useEffect(() => {
@@ -62,7 +77,7 @@ const DroppableArea = () => {
   }, [drop]);
 
   const deleteItem = (id) => {
-    setDeletedItemId(id);
+    console.log(`Item with ID ${id} is deleted.`);
     setDroppedItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
@@ -129,12 +144,12 @@ const DroppableArea = () => {
           deleteItem={deleteItem}
         />
       ))}
-      {deletedItemId && (
+      {showTrashIcon && (
         <div
           className="absolute top-0 right-0 p-2 cursor-pointer"
-          onClick={() => setDeletedItemId(null)}
+          style={{ zIndex: 10 }}
         >
-          <FaTrash size={20} color="#f44336" />
+          <img src={FaTrash} alt="Trash Icon" width={20} height={20} />
         </div>
       )}
     </div>
