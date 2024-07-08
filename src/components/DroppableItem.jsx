@@ -45,10 +45,8 @@ const DroppableItem = ({ id, type, left, top, deleteItem }) => {
       {type === "navbar" && <NavbarWidget />}
       {type === "text" && <button>Text Section</button>}
       {type === "image" && <button>Image</button>}
-      <div
-        ref={drag}
-        className="absolute inset-0 w-full h-full cursor-move"
-      ></div>
+      <div ref={drag} className="drag-handle"></div>
+      <div className="resizable-handle"></div>
     </div>
   );
 };

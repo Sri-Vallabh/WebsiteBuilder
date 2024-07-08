@@ -1,30 +1,51 @@
-.resize-handle {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background-color: #333;
-    cursor: nwse-resize;
-    /* Change cursor to indicate resize direction */
-    bottom: -6px;
-    right: -6px;
-    z-index: 1;
-    /* Ensure the handle is above the draggable item */
-}
-
-.resize-handle.resizing {
-    background-color: #666;
-    /* Change color to indicate resizing */
-}
-
 .draggable-item {
     position: absolute;
-    cursor: move;
-    background-color: #fff;
-    /* Add background to ensure visibility */
-    border: 1px solid #000;
-    /* Add border to see the boundaries */
+    border: 2px solid #3b82f6;
+    background-color: #dbeafe;
     padding: 10px;
-    /* Add some padding */
-    z-index: 10;
-    /* Ensure it's on top of other elements */
+    cursor: default;
+}
+
+.drag-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    display: flex;
+}
+
+.drag-handle::before,
+.drag-handle::after {
+    content: "";
+    pointer-events: all;
+}
+
+.drag-handle::before {
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: move;
+}
+
+.drag-handle::after {
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: move;
+}
+
+.resizable-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #fbbf24;
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
 }
