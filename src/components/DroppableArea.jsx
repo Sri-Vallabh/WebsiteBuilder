@@ -1,47 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../constants";
 import DroppableItem from "./DroppableItem";
-import { FaTrash } from "../assets"; // Import trash icon from React Icons
+import { FaTrash } from "../assets";
 
 const DroppableArea = () => {
   const [droppedItems, setDroppedItems] = useState([]);
-  const [areaWidth, setAreaWidth] = useState(1500); // Initial width of droppable area
-  const [areaHeight, setAreaHeight] = useState(600); // Initial height of droppable area
+  const [areaWidth, setAreaWidth] = useState(1500);
+  const [areaHeight, setAreaHeight] = useState(600);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0 });
   const [deletedItemId, setDeletedItemId] = useState(null);
+
+  const dropAreaRef = useRef(null);
 
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: ItemTypes.WIDGET,
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
+      if (!dropAreaRef.current) return;
+
+      const dropAreaRect = dropAreaRef.current.getBoundingClientRect();
       const newItem = {
-        id: item.id || Date.now(), // Generate unique ID if it's a new item
+        id: item.id || Date.now(),
         type: item.type,
-        left: offset.x - 5, // Adjust for container offset and size
-        top: offset.y - 5, // Adjust for container offset
+        left: offset.x - dropAreaRect.left,
+        top: offset.y - dropAreaRect.top,
       };
+
+      console.log("New item position:", newItem);
 
       const isOutside = !monitor.isOver({ shallow: true });
 
       if (isOutside) {
-        // Delete the item if dropped outside
         deleteItem(item.id);
       } else {
-        // Update existing item's position or add new item inside the droppable area
         const existingIndex = droppedItems.findIndex(
           (i) => i.id === newItem.id
         );
         if (existingIndex !== -1) {
-          // Update existing item's position
           setDroppedItems((prevItems) => {
             const updatedItems = [...prevItems];
             updatedItems[existingIndex] = newItem;
             return updatedItems;
           });
         } else {
-          // Add new item
           setDroppedItems((prevItems) => [...prevItems, newItem]);
         }
       }
@@ -51,6 +54,12 @@ const DroppableArea = () => {
       canDrop: monitor.canDrop(),
     }),
   });
+
+  useEffect(() => {
+    if (dropAreaRef.current) {
+      drop(dropAreaRef.current);
+    }
+  }, [drop]);
 
   const deleteItem = (id) => {
     setDeletedItemId(id);
@@ -62,10 +71,10 @@ const DroppableArea = () => {
     const { left, top, width, height } =
       e.currentTarget.getBoundingClientRect();
     if (
-      clientX > left + width - 20 && // Check if mouse is near the right edge
-      clientX < left + width && // Ensure it's exactly on the right edge
-      clientY > top + height - 20 && // Check if mouse is near the bottom edge
-      clientY < top + height // Ensure it's exactly on the bottom edge
+      clientX > left + width - 20 &&
+      clientX < left + width &&
+      clientY > top + height - 20 &&
+      clientY < top + height
     ) {
       setIsResizing(true);
       setResizeStart({ x: clientX, y: clientY });
@@ -94,7 +103,7 @@ const DroppableArea = () => {
 
   return (
     <div
-      ref={drop}
+      ref={dropAreaRef}
       className={`relative overflow-auto border-2 border-gray-300 rounded-lg p-4 ${backgroundColor}`}
       style={{ width: areaWidth, height: areaHeight }}
       onMouseMove={handleMouseMove}

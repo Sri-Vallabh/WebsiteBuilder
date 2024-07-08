@@ -1,12 +1,3 @@
-.draggable-item {
-    position: absolute;
-    border: 1px solid #333;
-    padding: 8px;
-    cursor: move;
-    /* Ensure that the dimensions are not affected by children */
-    box-sizing: border-box;
-}
-
 .resize-handle {
     position: absolute;
     width: 12px;
@@ -23,4 +14,17 @@
 .resize-handle.resizing {
     background-color: #666;
     /* Change color to indicate resizing */
+}
+
+.draggable-item {
+    position: absolute;
+    cursor: move;
+    background-color: #fff;
+    /* Add background to ensure visibility */
+    border: 1px solid #000;
+    /* Add border to see the boundaries */
+    padding: 10px;
+    /* Add some padding */
+    z-index: 10;
+    /* Ensure it's on top of other elements */
 }
